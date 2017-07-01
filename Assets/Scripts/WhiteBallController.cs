@@ -40,7 +40,7 @@ public class WhiteBallController : MonoBehaviour {
         float distance = heading.magnitude;
         Vector2 direction = heading/distance;
 
-        Hit(new Vector2(direction.x, direction.y), distance);
+        Hit(new Vector2(-direction.x, -direction.y), distance);
 
         mousePressed = false;
     }
