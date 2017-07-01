@@ -49,7 +49,7 @@ public class WhiteBallController : MonoBehaviour {
         direction = heading/distance;
 
         Vector2 move = new Vector2(direction.x, direction.y);
-        power = move.magnitude;
+        power = distance;
 
         Hit(move);
 
