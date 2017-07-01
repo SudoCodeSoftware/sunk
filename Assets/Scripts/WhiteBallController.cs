@@ -2,64 +2,61 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// A class used to control the behaviour of the WhiteBall
 public class WhiteBallController : MonoBehaviour {
 
+  // Public Fields
+  public float amplification;
+   
+  // GameObject Fields
   private Rigidbody2D rb;
   private Transform transform;
 
-  public float amplification;
-
-  private float power;
+  // Shot Calculation Fields
   private bool mousePressed;
   private Vector2 mouseStartPosition;
   private Vector2 mouseEndPosition;
-
-  private Vector2 heading;
-  private float distance;
-  private Vector2 direction;
+   
 
   void Start() {
-      rb = GetComponent<Rigidbody2D>();
-      transform = GetComponent<Transform>();
+    // Get the GameObject components
+    rb = GetComponent<Rigidbody2D>();
+    transform = GetComponent<Transform>();
   }
+    
 
   void Update() {
-    if (Input.GetKeyDown("space")) {
-      Hit(new Vector2(100, 0));
-    }
-
+    // Get the initial position of drag
     if (Input.GetMouseButtonDown(0)) {
       mousePressed = true;
-
-      Ray rayStart = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-      mouseStartPosition = rayStart.origin;
+      mouseStartPosition = GetMousePosition();
     }
 
-    if (Input.GetMouseButtonUp(0)){
+    // Get the final position of drag and execute hit
+    if (Input.GetMouseButtonUp(0) && mousePressed) {
+        mouseEndPosition = GetMousePosition();
 
-      if (mousePressed) {
+        Vector2 heading = mouseEndPosition - mouseStartPosition;
+        float distance = heading.magnitude;
+        Vector2 direction = heading/distance;
 
-        Ray rayEnd = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        mouseEndPosition = rayEnd.origin;
-
-        heading = mouseEndPosition - mouseStartPosition;
-        distance = heading.magnitude;
-        direction = heading/distance;
-
-        Vector2 move = new Vector2(direction.x, direction.y);
-        power = distance;
-
-        Hit(move);
+        Hit(new Vector2(direction.x, direction.y), distance);
 
         mousePressed = false;
-      }
-
     }
   }
 
-  void Hit(Vector2 move) {
-    rb.AddForce(move * power * amplification);
+  // Applies shot force to the ball
+  private void Hit(Vector2 move, float power) {
+    // Check if the Vector2 contains non-values
+    if (!(float.IsNaN(move.x) && float.IsNaN(move.y))) {
+      rb.AddForce(move * power * amplification);
+    }
+  }
+
+  // Helper method that returns the current MousePosition as a Vector2
+  private Vector2 GetMousePosition() {
+    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    return ray.origin;
   }
 }
