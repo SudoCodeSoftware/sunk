@@ -4,15 +4,10 @@ using UnityEngine;
 
 public class BallController : MonoBehaviour {
     
-    private SpriteRenderer renderer;
+  public bool ballPlayer;
 
-	// Use this for initialization
-	void Start () {
-        renderer = GetComponent<SpriteRenderer>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+  void Start () {
+    
+  }
 }
