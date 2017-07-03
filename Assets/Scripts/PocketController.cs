@@ -13,7 +13,7 @@ public class PocketController : MonoBehaviour {
 
   void OnTriggerEnter2D(Collider2D collider) {
     GameObject ball = collider.gameObject;
-    gameController.DropBall(ball);
+    gameController.SinkBall(ball);
     Destroy(ball);
   }
 }

@@ -4,10 +4,6 @@ using UnityEngine;
 
 public class BallController : MonoBehaviour {
     
-  public bool ballPlayer;
+  public string ballColour;
 
-
-  void Start () {
-    
-  }
 }

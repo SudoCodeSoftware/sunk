@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // A class used to control the behaviour of the WhiteBall
-public class WhiteBallController : MonoBehaviour {
+public class PlayerController : MonoBehaviour {
 
   // Public Fields
   public float amplification;
