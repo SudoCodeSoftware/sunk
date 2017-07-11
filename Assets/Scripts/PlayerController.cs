@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour {
     if (Input.GetMouseButton(0)) {
       Vector2 ballPos = rb.gameObject.transform.position;
       forceVector.SetPosition(0, ballPos);
-      forceVector.SetPosition(1, ballPos + Vector2.Scale((GetMousePosition() - ballPos), (new Vector2(forceVectorScale, forceVectorScale))));
+      forceVector.SetPosition(1, ballPos + Vector2.Scale((GetMousePosition() - ballPos), (new Vector2(-forceVectorScale, -forceVectorScale))));
     }
   }
 
