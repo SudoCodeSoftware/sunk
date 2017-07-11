@@ -34,9 +34,22 @@ public class PlayerController : MonoBehaviour {
   void Update() {
     // Get the initial position of drag
     if (Input.GetMouseButtonDown(0) && rb.velocity.magnitude == 0) {
-      mousePressed = true;
-      mouseStartPosition = GetMousePosition();
-      forceVector.enabled = true;
+      bool everythingStopped = true;
+      Object[] allRigidBodies = GameObject.FindObjectsOfType(typeof(Rigidbody2D));
+
+      foreach (Rigidbody2D obj in allRigidBodies) {
+        if (obj.velocity.magnitude != 0) {
+          everythingStopped = false;
+          break;
+        }
+      }
+
+      if (everythingStopped) {
+                mousePressed = true;
+                mouseStartPosition = GetMousePosition();
+                forceVector.enabled = true;
+      }
+      
     }
 
     // Get the final position of drag and execute hit
