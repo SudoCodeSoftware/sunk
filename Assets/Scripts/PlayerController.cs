@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour {
 
   void Update() {
     // Get the initial position of drag
-    if (Input.GetMouseButtonDown(0)) {
+    if (Input.GetMouseButtonDown(0) && rb.velocity.magnitude == 0) {
       mousePressed = true;
       mouseStartPosition = GetMousePosition();
       forceVector.enabled = true;
