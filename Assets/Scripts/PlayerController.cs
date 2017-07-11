@@ -16,13 +16,19 @@ public class PlayerController : MonoBehaviour {
   private bool mousePressed;
   private Vector2 mouseStartPosition;
   private Vector2 mouseEndPosition;
-   
+
+  private LineRenderer forceVector;
+  private const float forceVectorScale = 0.5F;
 
   void Start() {
     // Get the GameObject components
     rb = GetComponent<Rigidbody2D>();
     transform = GetComponent<Transform>();
-  }
+        forceVector = rb.gameObject.AddComponent<LineRenderer>();
+        forceVector.material = new Material(Shader.Find("Particles/Additive"));
+        forceVector.SetWidth(0.05f, 0.05f);
+        forceVector.SetVertexCount(2);
+    }
     
 
   void Update() {
@@ -30,11 +36,14 @@ public class PlayerController : MonoBehaviour {
     if (Input.GetMouseButtonDown(0)) {
       mousePressed = true;
       mouseStartPosition = GetMousePosition();
+      forceVector.enabled = true;
     }
 
     // Get the final position of drag and execute hit
     if (Input.GetMouseButtonUp(0) && mousePressed) {
         mouseEndPosition = GetMousePosition();
+
+        forceVector.enabled = false;
 
         Vector2 heading = mouseEndPosition - mouseStartPosition;
         float distance = heading.magnitude;
@@ -43,6 +52,12 @@ public class PlayerController : MonoBehaviour {
         Hit(new Vector2(-direction.x, -direction.y), distance);
 
         mousePressed = false;
+    }
+
+    if (Input.GetMouseButton(0)) {
+      Vector2 ballPos = rb.gameObject.transform.position;
+      forceVector.SetPosition(0, ballPos);
+      forceVector.SetPosition(1, ballPos + Vector2.Scale((GetMousePosition() - ballPos), (new Vector2(forceVectorScale, forceVectorScale))));
     }
   }
 
