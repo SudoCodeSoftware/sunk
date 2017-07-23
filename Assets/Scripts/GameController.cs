@@ -24,6 +24,20 @@ public class GameController : MonoBehaviour {
     UpdateUI();
   }
 
+  public static bool allStopped() {
+    bool everythingStopped = true;
+    Object[] allRigidBodies = GameObject.FindObjectsOfType(typeof(Rigidbody2D));
+    
+    foreach (Rigidbody2D obj in allRigidBodies) {
+      if (obj.velocity.magnitude != 0) {
+        everythingStopped = false;
+        break;
+      }
+    }
+
+        return everythingStopped;
+  }
+
   public void SinkBall(GameObject ball) {
     BallController ballController = ball.GetComponent<BallController>();
     CountSunkBall(ballController.ballColour);

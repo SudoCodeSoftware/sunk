@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour {
 
   private LineRenderer forceVector;
   private const float forceVectorScale = 0.5F;
+  private const float thresholdVelocity = 0.2F;	//Below this, velocities will be cut
 
   void Start() {
     // Get the GameObject components
@@ -34,20 +35,10 @@ public class PlayerController : MonoBehaviour {
   void Update() {
     // Get the initial position of drag
     if (Input.GetMouseButtonDown(0) && rb.velocity.magnitude == 0) {
-      bool everythingStopped = true;
-      Object[] allRigidBodies = GameObject.FindObjectsOfType(typeof(Rigidbody2D));
-
-      foreach (Rigidbody2D obj in allRigidBodies) {
-        if (obj.velocity.magnitude != 0) {
-          everythingStopped = false;
-          break;
-        }
-      }
-
-      if (everythingStopped) {
-                mousePressed = true;
-                mouseStartPosition = GetMousePosition();
-                forceVector.enabled = true;
+      if (GameController.allStopped()) {
+        mousePressed = true;
+        mouseStartPosition = GetMousePosition();
+        forceVector.enabled = true;
       }
       
     }
@@ -71,6 +62,14 @@ public class PlayerController : MonoBehaviour {
       Vector2 ballPos = rb.gameObject.transform.position;
       forceVector.SetPosition(0, ballPos);
       forceVector.SetPosition(1, ballPos + Vector2.Scale((GetMousePosition() - ballPos), (new Vector2(-forceVectorScale, -forceVectorScale))));
+    }
+	
+	Object[] allRigidBodies = GameObject.FindObjectsOfType(typeof(Rigidbody2D));
+    
+    foreach (Rigidbody2D obj in allRigidBodies) {
+      if (obj.velocity.magnitude < thresholdVelocity) {
+        obj.velocity = new Vector2(0, 0);
+      }
     }
   }
 
