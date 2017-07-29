@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour {
 
   private LineRenderer forceVector;
   private const float forceVectorScale = 0.5F;
-  private const float thresholdVelocity = 0.2F;	//Below this, velocities will be cut
+  private const float thresholdVelocity = 0.1F;	//Below this, velocities will be cut
 
   void Start() {
     // Get the GameObject components
