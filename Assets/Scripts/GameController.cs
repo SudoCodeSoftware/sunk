@@ -48,18 +48,20 @@ public class GameController : MonoBehaviour {
       // For white ball
 
       // Create new White Ball
-//       GameObject newWhiteBall = (GameObject)Instantiate(Resources.Load("WhiteBall"));
+      Instantiate(Resources.Load("WhiteBall"), Vector3.zero, Quaternion.identity);
 
-      // Change Turns
+      // TODO Change Turns
     }
     else if (sunkColour == "black") {
       // For black ball
 
+      // TODO
       // If all other balls have been sunk by current player
         // Set current player as winner
       // Else
         // Set other player as winner
 
+      // TODO
       // End Game
     }
     else {
@@ -89,7 +91,7 @@ public class GameController : MonoBehaviour {
   }
 
   private void UpdateUI() {
-    // Update UI elements to show scores and player colours
+    // TODO Update UI elements to show scores and player colours
   }
 
 }
