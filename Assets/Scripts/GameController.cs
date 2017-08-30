@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour {
 
   public Text playerTurnText;
+  public Text playerOneScoreText;
+  public Text playerTwoScoreText;
 
   private bool isPlayerTwoTurn;
   private bool ballsActive;
@@ -96,8 +98,10 @@ public class GameController : MonoBehaviour {
 
   private void UpdateUI() {
     // TODO Update UI elements to show scores and player colours
-    string playerNumber = isPlayerTwoTurn ? "2" : "1";
+    string playerNumber = isPlayerTwoTurn ? "Two" : "One";
     playerTurnText.text = "Player " + playerNumber + " Turn";
+    playerOneScoreText.text = "Player One: " + playerOneScore;
+    playerTwoScoreText.text = "Player Two: " + playerTwoScore;
   }
 
   private void SwapTurns() {
