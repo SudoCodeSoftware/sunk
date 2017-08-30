@@ -1,8 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
+
+  public Text playerTurnText;
 
   private bool isPlayerTwoTurn;
   private bool ballsActive;
@@ -46,7 +49,8 @@ public class GameController : MonoBehaviour {
   private void CountSunkBall(string sunkColour) {
     if (sunkColour == "white") {
       // For white ball
-
+      // Switch turns
+      SwapTurns();
       // Create new White Ball
       Instantiate(Resources.Load("WhiteBall"), Vector3.zero, Quaternion.identity);
 
@@ -92,6 +96,12 @@ public class GameController : MonoBehaviour {
 
   private void UpdateUI() {
     // TODO Update UI elements to show scores and player colours
+    string playerNumber = isPlayerTwoTurn ? "2" : "1";
+    playerTurnText.text = "Player " + playerNumber + " Turn";
+  }
+
+  private void SwapTurns() {
+    isPlayerTwoTurn = isPlayerTwoTurn ? false : true;
   }
 
 }
