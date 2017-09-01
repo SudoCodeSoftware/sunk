@@ -65,7 +65,8 @@ public class GameController : MonoBehaviour {
       // Give the current player an extra turn
       penaltyTurn = true;
       // Create new White Ball
-      Instantiate(Resources.Load("WhiteBall"), Vector3.zero, Quaternion.identity);
+      GameObject newBall = (GameObject)Instantiate(Resources.Load("WhiteBall"), Vector3.zero, Quaternion.identity);
+      newBall.GetComponent<PlayerController>().SetGameController(this);
     }
     // For black ball
     else if (sunkColour == "black") {

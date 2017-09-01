@@ -74,6 +74,10 @@ public class PlayerController : MonoBehaviour {
     }
   }
 
+  public void SetGameController(GameController newGameController) {
+    gameController = newGameController;
+  }
+
   // Applies shot force to the ball
   private void Hit(Vector2 move, float power) {
     // Check if the Vector2 contains non-values
