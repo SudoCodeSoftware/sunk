@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour {
   private bool isPlayerTwoTurn;
   private bool ballsActive;
   private bool coloursSet;
+  private bool penaltyTurn;
 
   private string playerOneColour;
   private string playerTwoColour;
@@ -23,13 +24,23 @@ public class GameController : MonoBehaviour {
     isPlayerTwoTurn = false;
     ballsActive = false;
     coloursSet = false;
+    penaltyTurn = false;
   }
 
   void Update () {
     UpdateUI();
   }
 
-  public static bool allStopped() {
+  public void SwapTurns() {
+    if (penaltyTurn) {
+      penaltyTurn = false;
+    }
+    else {
+      isPlayerTwoTurn = isPlayerTwoTurn ? false : true;
+    }
+  }
+
+  public static bool AllStopped() {
     bool everythingStopped = true;
     Object[] allRigidBodies = GameObject.FindObjectsOfType(typeof(Rigidbody2D));
     
@@ -40,7 +51,7 @@ public class GameController : MonoBehaviour {
       }
     }
 
-        return everythingStopped;
+    return everythingStopped;
   }
 
   public void SinkBall(GameObject ball) {
@@ -49,18 +60,15 @@ public class GameController : MonoBehaviour {
   }
 
   private void CountSunkBall(string sunkColour) {
+    // For white ball
     if (sunkColour == "white") {
-      // For white ball
-      // Switch turns
-      SwapTurns();
+      // Give the current player an extra turn
+      penaltyTurn = true;
       // Create new White Ball
       Instantiate(Resources.Load("WhiteBall"), Vector3.zero, Quaternion.identity);
-
-      // TODO Change Turns
     }
+    // For black ball
     else if (sunkColour == "black") {
-      // For black ball
-
       // TODO
       // If all other balls have been sunk by current player
         // Set current player as winner
@@ -70,8 +78,8 @@ public class GameController : MonoBehaviour {
       // TODO
       // End Game
     }
+    // For colour ball
     else {
-      // For colour ball
       // Check if the colours have been set
       if (!coloursSet) {
         if (isPlayerTwoTurn) {
@@ -103,9 +111,4 @@ public class GameController : MonoBehaviour {
     playerOneScoreText.text = "Player One: " + playerOneScore;
     playerTwoScoreText.text = "Player Two: " + playerTwoScore;
   }
-
-  private void SwapTurns() {
-    isPlayerTwoTurn = isPlayerTwoTurn ? false : true;
-  }
-
 }

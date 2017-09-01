@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
 
   // Public Fields
   public float amplification;
+  public GameController gameController;
    
   // GameObject Fields
   private Rigidbody2D rb;
@@ -35,7 +36,7 @@ public class PlayerController : MonoBehaviour {
   void Update() {
     // Get the initial position of drag
     if (Input.GetMouseButtonDown(0) && rb.velocity.magnitude == 0) {
-      if (GameController.allStopped()) {
+      if (GameController.AllStopped()) {
         mousePressed = true;
         mouseStartPosition = GetMousePosition();
         forceVector.enabled = true;
@@ -45,17 +46,17 @@ public class PlayerController : MonoBehaviour {
 
     // Get the final position of drag and execute hit
     if (Input.GetMouseButtonUp(0) && mousePressed) {
-        mouseEndPosition = GetMousePosition();
+      mouseEndPosition = GetMousePosition();
 
-        forceVector.enabled = false;
+      forceVector.enabled = false;
 
-        Vector2 heading = mouseEndPosition - mouseStartPosition;
-        float distance = heading.magnitude;
-        Vector2 direction = heading/distance;
+      Vector2 heading = mouseEndPosition - mouseStartPosition;
+      float distance = heading.magnitude;
+      Vector2 direction = heading/distance;
+      Hit(new Vector2(-direction.x, -direction.y), distance);
 
-        Hit(new Vector2(-direction.x, -direction.y), distance);
-
-        mousePressed = false;
+      gameController.SwapTurns();
+      mousePressed = false;
     }
 
     if (Input.GetMouseButton(0)) {
