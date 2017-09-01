@@ -8,12 +8,15 @@ public class GameController : MonoBehaviour {
   public Text playerTurnText;
   public Text playerOneScoreText;
   public Text playerTwoScoreText;
+  public Text playerWinText;
 
   private bool isPlayerTwoTurn;
   private bool ballsActive;
   private bool coloursSet;
   private bool penaltyTurn;
+  private bool playerWon;
 
+  private string winningPlayer;
   private string playerOneColour;
   private string playerTwoColour;
 
@@ -25,6 +28,7 @@ public class GameController : MonoBehaviour {
     ballsActive = false;
     coloursSet = false;
     penaltyTurn = false;
+    playerWon = false;
   }
 
   void Update () {
@@ -70,12 +74,23 @@ public class GameController : MonoBehaviour {
     }
     // For black ball
     else if (sunkColour == "black") {
-      // TODO
       // If all other balls have been sunk by current player
-        // Set current player as winner
-      // Else
-        // Set other player as winner
-
+      string currentPlayerBallColour = GetCurrentPlayerBallColour();
+      if (coloursSet) {
+        if (CountUnsunkBalls(currentPlayerBallColour) <= 0) {
+          // Set current player as winner
+          winningPlayer = isPlayerTwoTurn ? "Player Two" : "Player One";
+          playerWon = true;
+        }
+        else {
+          winningPlayer = isPlayerTwoTurn ? "Player One" : "Player Two";
+          playerWon = true;
+        }
+      }
+      else {
+        winningPlayer = isPlayerTwoTurn ? "Player Two" : "Player One";
+        playerWon = true;
+      }
       // TODO
       // End Game
     }
@@ -85,9 +100,11 @@ public class GameController : MonoBehaviour {
       if (!coloursSet) {
         if (isPlayerTwoTurn) {
           playerTwoColour = sunkColour;
+          playerOneColour = sunkColour == "red" ? "yellow" : "red";
         }
         else {
           playerOneColour = sunkColour;
+          playerTwoColour = sunkColour == "red" ? "yellow" : "red";
         }
         coloursSet = true;
       }
@@ -105,11 +122,28 @@ public class GameController : MonoBehaviour {
     }
   }
 
+  private string GetCurrentPlayerBallColour() {
+    if (isPlayerTwoTurn) {
+      return playerTwoColour;
+    }
+    else {
+      return playerOneColour;
+    }
+  }
+
+  private int CountUnsunkBalls(string ballColour) {
+    Object[] balls = GameObject.FindGameObjectsWithTag(ballColour);
+    return balls.Length;
+  }
+
   private void UpdateUI() {
-    // TODO Update UI elements to show scores and player colours
     string playerNumber = isPlayerTwoTurn ? "Two" : "One";
     playerTurnText.text = "Player " + playerNumber + " Turn";
     playerOneScoreText.text = "Player One: " + playerOneScore;
     playerTwoScoreText.text = "Player Two: " + playerTwoScore;
+    if (playerWon) {
+      // Show win text
+      playerWinText.text = winningPlayer + " Won!";
+    }
   }
 }
