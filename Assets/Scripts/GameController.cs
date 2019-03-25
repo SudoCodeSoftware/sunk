@@ -1,61 +1,52 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
-
+  
+  // Unity Assigned Fields
   public Text playerTurnText;
   public Text playerOneScoreText;
   public Text playerTwoScoreText;
   public Text playerWinText;
+  
+  // Private Fields
+  private bool _isPlayerTwoTurn;
+  private bool _coloursSet;
+  private bool _penaltyTurn;
+  private bool _playerWon;
 
-  private bool isPlayerTwoTurn;
-  private bool ballsActive;
-  private bool coloursSet;
-  private bool penaltyTurn;
-  private bool playerWon;
+  private string _winningPlayer;
+  private string _playerOneColour;
+  private string _playerTwoColour;
 
-  private string winningPlayer;
-  private string playerOneColour;
-  private string playerTwoColour;
+  private int _playerOneScore;
+  private int _playerTwoScore;
 
-  private int playerOneScore;
-  private int playerTwoScore;
-
-  void Start () {
-    isPlayerTwoTurn = false;
-    ballsActive = false;
-    coloursSet = false;
-    penaltyTurn = false;
-    playerWon = false;
+  private void Start () {
+    _isPlayerTwoTurn = false;
+    _coloursSet = false;
+    _penaltyTurn = false;
+    _playerWon = false;
   }
 
-  void Update () {
-    UpdateUI();
+  private void Update () {
+    UpdateUi();
   }
 
   public void SwapTurns() {
-    if (penaltyTurn) {
-      penaltyTurn = false;
+    if (_penaltyTurn) {
+      _penaltyTurn = false;
     }
     else {
-      isPlayerTwoTurn = isPlayerTwoTurn ? false : true;
+      _isPlayerTwoTurn = !_isPlayerTwoTurn;
     }
   }
 
   public static bool AllStopped() {
-    bool everythingStopped = true;
-    Object[] allRigidBodies = GameObject.FindObjectsOfType(typeof(Rigidbody2D));
-    
-    foreach (Rigidbody2D obj in allRigidBodies) {
-      if (obj.velocity.magnitude != 0) {
-        everythingStopped = false;
-        break;
-      }
-    }
+    var allRigidBodies = FindObjectsOfType(typeof(Rigidbody2D));
 
-    return everythingStopped;
+    return allRigidBodies.Cast<Rigidbody2D>().All(rigidBody2D => rigidBody2D.velocity.magnitude.Equals(0));
   }
 
   public void SinkBall(GameObject ball) {
@@ -67,7 +58,7 @@ public class GameController : MonoBehaviour {
     // For white ball
     if (sunkColour == "white") {
       // Give the current player an extra turn
-      penaltyTurn = true;
+      _penaltyTurn = true;
       // Create new White Ball
       GameObject newBall = (GameObject)Instantiate(Resources.Load("WhiteBall"), Vector3.zero, Quaternion.identity);
       newBall.GetComponent<PlayerController>().SetGameController(this);
@@ -76,20 +67,20 @@ public class GameController : MonoBehaviour {
     else if (sunkColour == "black") {
       // If all other balls have been sunk by current player
       string currentPlayerBallColour = GetCurrentPlayerBallColour();
-      if (coloursSet) {
-        if (CountUnsunkBalls(currentPlayerBallColour) <= 0) {
+      if (_coloursSet) {
+        if (CountUnSunkBalls(currentPlayerBallColour) <= 0) {
           // Set current player as winner
-          winningPlayer = isPlayerTwoTurn ? "Player Two" : "Player One";
-          playerWon = true;
+          _winningPlayer = _isPlayerTwoTurn ? "Player Two" : "Player One";
+          _playerWon = true;
         }
         else {
-          winningPlayer = isPlayerTwoTurn ? "Player One" : "Player Two";
-          playerWon = true;
+          _winningPlayer = _isPlayerTwoTurn ? "Player One" : "Player Two";
+          _playerWon = true;
         }
       }
       else {
-        winningPlayer = isPlayerTwoTurn ? "Player Two" : "Player One";
-        playerWon = true;
+        _winningPlayer = _isPlayerTwoTurn ? "Player Two" : "Player One";
+        _playerWon = true;
       }
       // TODO
       // End Game
@@ -97,16 +88,16 @@ public class GameController : MonoBehaviour {
     // For colour ball
     else {
       // Check if the colours have been set
-      if (!coloursSet) {
-        if (isPlayerTwoTurn) {
-          playerTwoColour = sunkColour;
-          playerOneColour = sunkColour == "red" ? "yellow" : "red";
+      if (!_coloursSet) {
+        if (_isPlayerTwoTurn) {
+          _playerTwoColour = sunkColour;
+          _playerOneColour = sunkColour == "red" ? "yellow" : "red";
         }
         else {
-          playerOneColour = sunkColour;
-          playerTwoColour = sunkColour == "red" ? "yellow" : "red";
+          _playerOneColour = sunkColour;
+          _playerTwoColour = sunkColour == "red" ? "yellow" : "red";
         }
-        coloursSet = true;
+        _coloursSet = true;
       }
       // Score the sunk ball
       AddBallToScore(sunkColour);
@@ -114,36 +105,36 @@ public class GameController : MonoBehaviour {
   }
 
   private void AddBallToScore(string sunkColour) {
-    if (playerOneColour == sunkColour) {
-      playerOneScore++;
+    if (_playerOneColour == sunkColour) {
+      _playerOneScore++;
     }
     else {
-      playerTwoScore++;
+      _playerTwoScore++;
     }
   }
 
   private string GetCurrentPlayerBallColour() {
-    if (isPlayerTwoTurn) {
-      return playerTwoColour;
+    if (_isPlayerTwoTurn) {
+      return _playerTwoColour;
     }
     else {
-      return playerOneColour;
+      return _playerOneColour;
     }
   }
 
-  private int CountUnsunkBalls(string ballColour) {
-    Object[] balls = GameObject.FindGameObjectsWithTag(ballColour);
+  private static int CountUnSunkBalls(string ballColour) {
+    var balls = GameObject.FindGameObjectsWithTag(ballColour);
     return balls.Length;
   }
 
-  private void UpdateUI() {
-    string playerNumber = isPlayerTwoTurn ? "Two" : "One";
+  private void UpdateUi() {
+    var playerNumber = _isPlayerTwoTurn ? "Two" : "One";
     playerTurnText.text = "Player " + playerNumber + " Turn";
-    playerOneScoreText.text = "Player One: " + playerOneScore;
-    playerTwoScoreText.text = "Player Two: " + playerTwoScore;
-    if (playerWon) {
+    playerOneScoreText.text = "Player One: " + _playerOneScore;
+    playerTwoScoreText.text = "Player Two: " + _playerTwoScore;
+    if (_playerWon) {
       // Show win text
-      playerWinText.text = winningPlayer + " Won!";
+      playerWinText.text = _winningPlayer + " Won!";
     }
   }
 }

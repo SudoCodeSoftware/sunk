@@ -1,19 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PocketController : MonoBehaviour {
 
   public GameObject gameControllerObject;
-  private GameController gameController;
+  private GameController _gameController;
 
-  void Start () {
-    gameController = gameControllerObject.GetComponent<GameController>();
+  private void Start () {
+    _gameController = gameControllerObject.GetComponent<GameController>();
   }
 
-  void OnTriggerEnter2D(Collider2D collider) {
-    GameObject ball = collider.gameObject;
-    gameController.SinkBall(ball);
+  private void OnTriggerEnter2D(Collider2D ballCollider) {
+    var ball = ballCollider.gameObject;
+    _gameController.SinkBall(ball);
     Destroy(ball);
   }
 }
